@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:aop="http://www.springframework.org/schema/aop"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.1.xsd">
+
+
+	<bean id="myorder" class="com.spring.ex2.OrderImpl"/>
+	<bean id="myboard" class="com.spring.ex2.BoardImpl"/>
+	
+	<bean id="li" class="com.spring.ex2.Login"/>
+	<bean id="lo" class="com.spring.ex2.Logout"/>
+	<bean id="d" class="com.spring.ex2.Dao"/>
+	<bean id="h" class="com.spring.ex2.Hello"/>
+	
+	
+	
+	
+	<aop:config>
+		<aop:aspect ref="li">
+			<aop:before method="login" pointcut="execution(* com.spring.ex2.OrderImpl.*())"/>
+		</aop:aspect>
+	</aop:config>
+	
+	<aop:config>
+		<aop:aspect ref="lo" order="1">
+			<aop:after method="logout" pointcut="execution(* com.spring.ex2.OrderImpl.*())"/>
+		</aop:aspect>
+	</aop:config>
+
+	<aop:config>
+		<aop:aspect ref="d" order="2">
+			<aop:after method="dao" pointcut="execution(* com.spring.ex2.OrderImpl.*())"/>
+		</aop:aspect>
+	</aop:config>
+	
+	
+	
+	
+	
+	
+	<aop:config>
+		<aop:aspect ref="li" order="1">
+			<aop:before method="login" pointcut="execution(* com.spring.ex2.BoardImpl.*())"/>
+		</aop:aspect>	
+	</aop:config>	
+	
+	<aop:config>
+		<aop:aspect ref="h" order="2">
+			<aop:before method="hello" pointcut="execution(* com.spring.ex2.BoardImpl.*())"/>
+		</aop:aspect>	
+	</aop:config>
+	
+	<aop:config>
+		<aop:aspect ref="d" order="3">
+			<aop:before method="dao" pointcut="execution(* com.spring.ex2.BoardImpl.*())"/>
+		</aop:aspect>	
+	</aop:config>
+	
+	<aop:config>
+		<aop:aspect ref="lo">
+			<aop:after method="logout" pointcut="execution(* com.spring.ex2.BoardImpl.*())"/>
+		</aop:aspect>	
+	</aop:config>
+	
+
+
+
+</beans>
+
+<!-- 
+1.AOP개념
+	AOP (Aspect Oriented Programming) 
+	:관계지향 프로그래밍
+	:핵심기능, 공통기능을 나누어 프로그래밍할 수 있는 프로그램기법
+
+2.AOP 자르화일 설정
+	aop할때 필요한 자르화일이 있는데
+	Spring은 자르화일 설정을 pom.xml에서 진행한다
+	16번째줄 <dependencies>설정으로 자르화일을 대신한다
+	기본으로 설정되어있는 자르화일도 있지만,
+	aop와 같이 추가로 설정해줘야 하는 자르화일도 있다
+	120번째줄에 작성해놓음
+
+3.각 의미
+	<aop:config> :지금부터 aop기능을 시작하갰다 선언
+	<aop:aspect> :공통사항(공통기능) 적기 (로그인,로그아웃,DB작업)
+	pointcut : 핵심사항 어디에 있는지 
+	advice : before,after
+	joinpoint : aspect(공통사항)이 적용가능한 지점들의 모음
+
+4.핵심기능/공통기능
+	*핵심기능 = 상품주문하기 = pointcut="execution(* com.spring.ex2.OrderImpl.*())"
+	*공통기능 = <aop:aspect>
+		핵심기능 이전에 하고 싶은 기능 = 로그인 = <aop:before>
+		핵심기능 이후에 하고 싶은 기능 = db,로그아웃 = <aop:after>
+
+5.before/after +order
+	핵심기능 전에 할것이 많을수 있고,
+	핵심기능 후에 할것이 많을수도 있다
+	순서를 정해주자
+	after에서는 order가 큰 숫자가 먼저 실행된다
+	before에서는 order가 작은 숫자가 먼저 실행된다
+ -->
+
+
+
+
